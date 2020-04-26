@@ -86,15 +86,6 @@ jobs:
           gem install virtuatable
       - run: |
           virtuatable kube create authorizations --retry=3
-  tag-job:
-    docker:
-      - image: circleci/ruby:2.6.5-node-browsers
-    steps:
-      - setup_ruby
-      - run: |
-          virtuatable docker latest authorizations | xargs git tag
-      - run: |
-          git push --tags
 workflows:
   version: 2.1
   build-deploy:
@@ -113,12 +104,6 @@ workflows:
             branches:
               only: master
       - deploy-job:
-          requires:
-            - build-job
-          filters:
-            branches:
-              only: master
-      - tag-job:
           requires:
             - build-job
           filters:
