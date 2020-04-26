@@ -8,7 +8,8 @@ module Decorators
 
     def to_h
       {
-        code: code
+        code: code,
+        created_at: created_at.iso8601
       }
     end
   end
