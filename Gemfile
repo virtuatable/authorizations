@@ -16,4 +16,5 @@ group :test do
   gem 'rubocop'                , '0.71.0'
   gem 'yard'                   , '0.9.20'
   gem 'rspec_junit_formatter'  , '0.4.1'
+  gem 'faker'                  , '2.11.0'
 end

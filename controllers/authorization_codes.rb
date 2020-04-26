@@ -6,11 +6,23 @@ module Controllers
   # @author Vincent Courtois <courtois.vincent@outlook.com>
   class AuthorizationCodes < Virtuatable::Controllers::Base
     api_route 'post', '/', options: { authenticated: false, premium: true } do
-      authorization = Services::OAuth.instance.create(
+      api_created Services::OAuth.instance.create(
         application: application,
         account: account
       )
-      api_created authorization
+    end
+
+    api_route 'get', '/:id', options: { authenticated: false } do
+      api_item authorization
+    end
+
+    def authorization
+      auth = Arkaan::OAuth::Authorization.find_by(code: params['id'])
+      api_not_found('auth_code.unknown') if auth.nil?
+      if auth.application.key != params['app_key']
+        api_forbidden 'app_key.forbidden'
+      end
+      auth
     end
 
     def account
