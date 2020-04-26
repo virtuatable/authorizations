@@ -12,6 +12,10 @@ module Controllers
       )
     end
 
+    api_route 'get', '/own', options: { premium: true } do
+      api_list session.account.authorizations
+    end
+
     api_route 'get', '/:id', options: { authenticated: false } do
       api_item authorization
     end

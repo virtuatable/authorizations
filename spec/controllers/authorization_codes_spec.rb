@@ -5,6 +5,37 @@ RSpec.describe Controllers::AuthorizationCodes do
 
   let!(:account) { create(:babausse) }
 
+  describe 'GET /' do
+    let!(:application) { create(:application, creator: account, premium: true) }
+    let!(:auth) { create(:authorization, application: application, account: account) }
+    let!(:session) { create(:session, account: account) }
+
+    it_should_behave_like 'a route', 'get', '/own', {premium: true}
+
+    describe 'Nominal cases' do
+      before do
+        get '/own', {
+          app_key: application.key,
+          session_id: session.token
+        }
+      end
+      it 'Returns a 200 (OK) status code' do
+        expect(last_response.status).to be 200
+      end
+      it 'Returns the correct body' do
+        expect(last_response.body).to include_json({
+          count: 1,
+          items: [
+            {
+              code: auth.code,
+              created_at: auth.created_at.iso8601
+            }
+          ]
+        })
+      end
+    end
+  end
+
   describe 'GET /:id' do
     let!(:application) { create(:application, creator: account) }
     let!(:authorization) { create(:authorization, account: account, application: application) }
